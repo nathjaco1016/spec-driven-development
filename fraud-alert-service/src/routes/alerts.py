@@ -9,9 +9,11 @@ from fastapi import APIRouter, HTTPException, Query
 from src.database import db
 from src.models import (
     AlertCreate,
+    AlertListResponse,
     AlertResponse,
     AlertStatus,
     AssignRequest,
+    RiskLevel,
     StatusHistoryEntry,
     StatusUpdateRequest,
     TERMINAL_STATUSES,
@@ -95,6 +97,87 @@ def create_alert(body: AlertCreate):
         alert_row = conn.execute("SELECT * FROM alerts WHERE id = ?", (alert_id,)).fetchone()
 
     return _build_alert_response(alert_row, tx_row)
+
+
+@router.get("", response_model=AlertListResponse)
+def list_alerts(
+    status: AlertStatus | None = Query(default=None),
+    risk_level: RiskLevel | None = Query(default=None),
+    analyst_id: str | None = Query(default=None),
+    created_after: datetime | None = Query(default=None),
+    created_before: datetime | None = Query(default=None),
+    show_pii: Literal["true", "false"] | None = Query(default=None),
+):
+    conditions = []
+    params = []
+
+    if status is not None:
+        conditions.append("a.status = ?")
+        params.append(status.value)
+
+    if risk_level is not None:
+        conditions.append("a.risk_level = ?")
+        params.append(risk_level.value)
+
+    if analyst_id is not None:
+        if analyst_id == "unassigned":
+            conditions.append("a.analyst_id IS NULL")
+        else:
+            conditions.append("a.analyst_id = ?")
+            params.append(analyst_id)
+
+    if created_after is not None:
+        conditions.append("a.created_at >= ?")
+        params.append(created_after.isoformat())
+
+    if created_before is not None:
+        conditions.append("a.created_at <= ?")
+        params.append(created_before.isoformat())
+
+    where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+    query = f"""
+        SELECT a.*, t.id AS t_id, t.amount, t.merchant_name, t.merchant_category,
+               t.location, t.timestamp, t.card_id, t.account_id
+        FROM alerts a
+        JOIN transactions t ON a.transaction_id = t.id
+        {where}
+        ORDER BY a.created_at DESC
+    """
+
+    with db() as conn:
+        rows = conn.execute(query, params).fetchall()
+
+    reveal_pii = show_pii == "true"
+    alerts = []
+    for row in rows:
+        tx = TransactionResponse(
+            id=row["t_id"],
+            amount=row["amount"],
+            merchant_name=row["merchant_name"],
+            merchant_category=row["merchant_category"],
+            location=row["location"],
+            timestamp=row["timestamp"],
+            card_id=row["card_id"],
+            account_id=row["account_id"],
+        )
+        if not reveal_pii:
+            tx = mask_transaction(tx)
+        history = [StatusHistoryEntry(**e) for e in json.loads(row["status_history"])]
+        alerts.append(AlertResponse(
+            id=row["id"],
+            transaction_id=row["transaction_id"],
+            transaction=tx,
+            risk_score=row["risk_score"],
+            risk_level=row["risk_level"],
+            status=row["status"],
+            analyst_id=row["analyst_id"],
+            contains_pii=bool(row["contains_pii"]),
+            created_at=row["created_at"],
+            updated_at=row["updated_at"],
+            status_history=history,
+        ))
+
+    return AlertListResponse(alerts=alerts, total=len(alerts))
 
 
 @router.get("/{alert_id}", response_model=AlertResponse)

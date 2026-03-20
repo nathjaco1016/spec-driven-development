@@ -117,6 +117,11 @@ class StatusUpdateRequest(BaseModel):
     changed_by: str
 
 
+class AlertListResponse(BaseModel):
+    alerts: list[AlertResponse]
+    total: int
+
+
 def derive_risk_level(score: float) -> RiskLevel:
     if score < 0.3:
         return RiskLevel.low

@@ -5,15 +5,15 @@ from pathlib import Path
 DB_PATH = Path(__file__).parent.parent / "fraud_alerts.db"
 
 
-def get_connection(db_path: Path = DB_PATH) -> sqlite3.Connection:
-    conn = sqlite3.connect(db_path)
+def get_connection(db_path: Path | None = None) -> sqlite3.Connection:
+    conn = sqlite3.connect(db_path or DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
 
 @contextmanager
-def db(db_path: Path = DB_PATH):
-    conn = get_connection(db_path)
+def db(db_path: Path | None = None):
+    conn = get_connection(db_path or DB_PATH)
     try:
         yield conn
         conn.commit()
@@ -24,7 +24,7 @@ def db(db_path: Path = DB_PATH):
         conn.close()
 
 
-def init_db(db_path: Path = DB_PATH) -> None:
+def init_db(db_path: Path | None = None) -> None:
     with db(db_path) as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS transactions (
