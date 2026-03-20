@@ -2,7 +2,9 @@ import json
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, HTTPException
+from typing import Literal
+
+from fastapi import APIRouter, HTTPException, Query
 
 from src.database import db
 from src.models import (
@@ -17,11 +19,12 @@ from src.models import (
     TransactionResponse,
     derive_risk_level,
 )
+from src.pii import mask_transaction
 
 router = APIRouter(prefix="/alerts", tags=["alerts"])
 
 
-def _build_alert_response(alert_row, tx_row) -> AlertResponse:
+def _build_alert_response(alert_row, tx_row, show_pii: bool = False) -> AlertResponse:
     transaction = TransactionResponse(
         id=tx_row["id"],
         amount=tx_row["amount"],
@@ -32,6 +35,8 @@ def _build_alert_response(alert_row, tx_row) -> AlertResponse:
         card_id=tx_row["card_id"],
         account_id=tx_row["account_id"],
     )
+    if not show_pii:
+        transaction = mask_transaction(transaction)
     history = [StatusHistoryEntry(**entry) for entry in json.loads(alert_row["status_history"])]
     return AlertResponse(
         id=alert_row["id"],
@@ -93,7 +98,7 @@ def create_alert(body: AlertCreate):
 
 
 @router.get("/{alert_id}", response_model=AlertResponse)
-def get_alert(alert_id: str):
+def get_alert(alert_id: str, show_pii: Literal["true", "false"] | None = Query(default=None)):
     with db() as conn:
         alert_row = conn.execute(
             "SELECT * FROM alerts WHERE id = ?", (alert_id,)
@@ -103,7 +108,7 @@ def get_alert(alert_id: str):
         tx_row = conn.execute(
             "SELECT * FROM transactions WHERE id = ?", (alert_row["transaction_id"],)
         ).fetchone()
-    return _build_alert_response(alert_row, tx_row)
+    return _build_alert_response(alert_row, tx_row, show_pii=(show_pii == "true"))
 
 
 @router.patch("/{alert_id}/assign", response_model=AlertResponse)

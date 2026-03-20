@@ -1,10 +1,12 @@
 import uuid
-from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from typing import Literal
+
+from fastapi import APIRouter, HTTPException, Query
 
 from src.database import db
 from src.models import TransactionCreate, TransactionResponse
+from src.pii import mask_transaction
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])
 
@@ -23,7 +25,7 @@ def _row_to_response(row) -> TransactionResponse:
 
 
 @router.post("", response_model=TransactionResponse, status_code=201)
-def create_transaction(body: TransactionCreate):
+def create_transaction(body: TransactionCreate, show_pii: Literal["true", "false"] | None = Query(default=None)):
     transaction_id = str(uuid.uuid4())
     with db() as conn:
         conn.execute(
@@ -47,15 +49,17 @@ def create_transaction(body: TransactionCreate):
         row = conn.execute(
             "SELECT * FROM transactions WHERE id = ?", (transaction_id,)
         ).fetchone()
-    return _row_to_response(row)
+    tx = _row_to_response(row)
+    return tx if show_pii == "true" else mask_transaction(tx)
 
 
 @router.get("/{transaction_id}", response_model=TransactionResponse)
-def get_transaction(transaction_id: str):
+def get_transaction(transaction_id: str, show_pii: Literal["true", "false"] | None = Query(default=None)):
     with db() as conn:
         row = conn.execute(
             "SELECT * FROM transactions WHERE id = ?", (transaction_id,)
         ).fetchone()
     if row is None:
         raise HTTPException(status_code=404, detail="Transaction not found")
-    return _row_to_response(row)
+    tx = _row_to_response(row)
+    return tx if show_pii == "true" else mask_transaction(tx)

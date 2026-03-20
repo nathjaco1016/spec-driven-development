@@ -106,10 +106,13 @@ def test_get_transaction_not_found(client):
     assert response.status_code == 404
 
 
-def test_get_transaction_stores_full_card_id(client):
-    """Full card_id is persisted — masking is handled at response layer (future spec)."""
+def test_get_transaction_pii_masked_by_default(client):
+    """PII fields are masked in responses but full values are preserved in storage."""
     created = client.post("/transactions", json=VALID_PAYLOAD).json()
     fetched = client.get(f"/transactions/{created['id']}").json()
-    # For now (pre-PII-masking), full value is returned
-    assert fetched["card_id"] == VALID_PAYLOAD["card_id"]
-    assert fetched["account_id"] == VALID_PAYLOAD["account_id"]
+    assert fetched["card_id"] == "****1234"
+    assert fetched["account_id"] != VALID_PAYLOAD["account_id"]
+    # show_pii=true reveals the stored values
+    full = client.get(f"/transactions/{created['id']}?show_pii=true").json()
+    assert full["card_id"] == VALID_PAYLOAD["card_id"]
+    assert full["account_id"] == VALID_PAYLOAD["account_id"]
