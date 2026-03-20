@@ -98,6 +98,25 @@ class AlertResponse(BaseModel):
     status_history: list[StatusHistoryEntry]
 
 
+TERMINAL_STATUSES = {AlertStatus.confirmed_fraud, AlertStatus.false_positive, AlertStatus.escalated}
+
+VALID_TRANSITIONS = {
+    AlertStatus.pending: {AlertStatus.under_review},
+    AlertStatus.under_review: {AlertStatus.confirmed_fraud, AlertStatus.false_positive, AlertStatus.escalated},
+}
+
+
+class AssignRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    analyst_id: str
+
+
+class StatusUpdateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    status: AlertStatus
+    changed_by: str
+
+
 def derive_risk_level(score: float) -> RiskLevel:
     if score < 0.3:
         return RiskLevel.low
