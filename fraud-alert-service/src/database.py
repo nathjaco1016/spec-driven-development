@@ -38,3 +38,18 @@ def init_db(db_path: Path = DB_PATH) -> None:
                 account_id  TEXT NOT NULL
             )
         """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS alerts (
+                id              TEXT PRIMARY KEY,
+                transaction_id  TEXT NOT NULL UNIQUE,
+                risk_score      REAL NOT NULL,
+                risk_level      TEXT NOT NULL,
+                status          TEXT NOT NULL DEFAULT 'pending',
+                analyst_id      TEXT,
+                contains_pii    INTEGER NOT NULL DEFAULT 1,
+                created_at      TEXT NOT NULL,
+                updated_at      TEXT NOT NULL,
+                status_history  TEXT NOT NULL,
+                FOREIGN KEY (transaction_id) REFERENCES transactions(id)
+            )
+        """)
