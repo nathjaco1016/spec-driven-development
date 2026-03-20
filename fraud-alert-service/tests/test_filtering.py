@@ -29,7 +29,7 @@ def assign(client, alert_id, analyst_id="analyst-1"):
     return client.patch(f"/alerts/{alert_id}/assign", json={"analyst_id": analyst_id}).json()
 
 
-def transition(client, alert_id, status, changed_by="system"):
+def transition(client, alert_id, status, changed_by="analyst-1"):
     return client.patch(f"/alerts/{alert_id}/status", json={"status": status, "changed_by": changed_by}).json()
 
 

@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 VALID_TRANSACTION = {
@@ -180,7 +182,6 @@ def test_assign_to_escalated_returns_409(client):
 
 
 def test_assign_updates_updated_at(client):
-    import time
     alert = create_alert(client)
     original_updated_at = alert["updated_at"]
     time.sleep(0.01)

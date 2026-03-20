@@ -19,13 +19,13 @@
 - GET response returns the transaction with PII fields masked by default
 
 ## Acceptance Criteria
-- [ ] POST /transactions creates a transaction and returns it with a generated UUID
-- [ ] POST /transactions returns 422 for missing required fields
-- [ ] POST /transactions returns 422 for amount <= 0
-- [ ] POST /transactions returns 422 for invalid merchant_category
-- [ ] POST /transactions returns 422 for invalid timestamp format
-- [ ] GET /transactions/{id} returns the transaction with PII fields masked
-- [ ] GET /transactions/{id} returns 404 for nonexistent ID
-- [ ] POST /transactions accepts and stores all valid merchant_category values
-- [ ] Response includes server-generated `id` that was not provided in the request body
-- [ ] Extra/unknown fields in the request body are ignored or rejected (pick one, document it)
+- [x] POST /transactions creates a transaction and returns it with a generated UUID
+- [x] POST /transactions returns 422 for missing required fields
+- [x] POST /transactions returns 422 for amount <= 0
+- [x] POST /transactions returns 422 for invalid merchant_category
+- [x] POST /transactions returns 422 for invalid timestamp format
+- [x] GET /transactions/{id} returns the transaction with PII fields masked
+- [x] GET /transactions/{id} returns 404 for nonexistent ID
+- [x] POST /transactions accepts and stores all valid merchant_category values
+- [x] Response includes server-generated `id` that was not provided in the request body
+- [x] Extra/unknown fields in the request body are ignored or rejected (pick one, document it)

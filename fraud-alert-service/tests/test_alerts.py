@@ -65,10 +65,14 @@ def test_create_alert_initial_status_history(client):
 
 
 def test_create_alert_has_created_at_and_updated_at(client):
+    from datetime import datetime
     tx = create_transaction(client)
     data = create_alert(client, tx["id"]).json()
-    assert "created_at" in data
-    assert "updated_at" in data
+    # Both timestamps must be valid ISO datetimes
+    created = datetime.fromisoformat(data["created_at"].replace("Z", "+00:00"))
+    updated = datetime.fromisoformat(data["updated_at"].replace("Z", "+00:00"))
+    # On creation they should be equal
+    assert created == updated
 
 
 def test_create_alert_embeds_transaction(client):

@@ -41,33 +41,33 @@
 ## Acceptance Criteria
 
 ### Valid Transitions
-- [ ] pending → under_review succeeds when analyst_id is assigned
-- [ ] under_review → confirmed_fraud succeeds
-- [ ] under_review → false_positive succeeds
-- [ ] under_review → escalated succeeds
-- [ ] Each successful transition appends to status_history with correct status, timestamp, and changed_by
+- [x] pending → under_review succeeds when analyst_id is assigned
+- [x] under_review → confirmed_fraud succeeds
+- [x] under_review → false_positive succeeds
+- [x] under_review → escalated succeeds
+- [x] Each successful transition appends to status_history with correct status, timestamp, and changed_by
 
 ### Invalid Transitions
-- [ ] pending → confirmed_fraud returns 409
-- [ ] pending → false_positive returns 409
-- [ ] pending → escalated returns 409
-- [ ] under_review → pending returns 409
-- [ ] confirmed_fraud → any status returns 409
-- [ ] false_positive → any status returns 409
-- [ ] escalated → any status returns 409
-- [ ] pending → under_review without analyst_id assigned returns 409 (or 422)
+- [x] pending → confirmed_fraud returns 409
+- [x] pending → false_positive returns 409
+- [x] pending → escalated returns 409
+- [x] under_review → pending returns 409
+- [x] confirmed_fraud → any status returns 409
+- [x] false_positive → any status returns 409
+- [x] escalated → any status returns 409
+- [x] pending → under_review without analyst_id assigned returns 409 (or 422)
 
 ### Analyst Assignment
-- [ ] Assigning analyst to a pending alert succeeds
-- [ ] Assigning analyst to an under_review alert succeeds (re-assignment)
-- [ ] Assigning analyst to a confirmed_fraud alert returns 409
-- [ ] Assigning analyst to a false_positive alert returns 409
-- [ ] Assigning analyst to an escalated alert returns 409
-- [ ] Assignment updates the updated_at timestamp
+- [x] Assigning analyst to a pending alert succeeds
+- [x] Assigning analyst to an under_review alert succeeds (re-assignment)
+- [x] Assigning analyst to a confirmed_fraud alert returns 409
+- [x] Assigning analyst to a false_positive alert returns 409
+- [x] Assigning analyst to an escalated alert returns 409
+- [x] Assignment updates the updated_at timestamp
 
 ### Audit Trail
-- [ ] A newly created alert has exactly one status_history entry (pending)
-- [ ] After transitioning pending → under_review → confirmed_fraud, status_history has 3 entries
-- [ ] Status history entries are in chronological order
-- [ ] Each entry contains the correct changed_by value from the request
-- [ ] Status history is immutable — previous entries are unchanged after new transitions
+- [x] A newly created alert has exactly one status_history entry (pending)
+- [x] After transitioning pending → under_review → confirmed_fraud, status_history has 3 entries
+- [x] Status history entries are in chronological order
+- [x] Each entry contains the correct changed_by value from the request
+- [x] Status history is immutable — previous entries are unchanged after new transitions

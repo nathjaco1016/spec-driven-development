@@ -31,8 +31,10 @@ def test_create_transaction_returns_generated_id(client):
 def test_create_transaction_returns_all_fields(client):
     response = client.post("/transactions", json=VALID_PAYLOAD)
     data = response.json()
-    for field in ("amount", "merchant_name", "merchant_category", "location", "timestamp"):
-        assert field in data
+    assert data["amount"] == VALID_PAYLOAD["amount"]
+    assert data["merchant_name"] == VALID_PAYLOAD["merchant_name"]
+    assert data["merchant_category"] == VALID_PAYLOAD["merchant_category"]
+    assert data["location"] == VALID_PAYLOAD["location"]
 
 
 def test_create_transaction_missing_required_field(client):

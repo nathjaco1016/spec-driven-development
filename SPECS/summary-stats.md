@@ -25,22 +25,22 @@
 ## Acceptance Criteria
 
 ### Basic Stats
-- [ ] GET /alerts/summary returns 200 with the correct response structure
-- [ ] total_alerts matches the actual number of alerts
-- [ ] by_status counts are accurate for each status category
-- [ ] by_risk_level counts are accurate for each risk level category
-- [ ] All status keys are present even when count is 0
-- [ ] All risk_level keys are present even when count is 0
+- [x] GET /alerts/summary returns 200 with the correct response structure
+- [x] total_alerts matches the actual number of alerts
+- [x] by_status counts are accurate for each status category
+- [x] by_risk_level counts are accurate for each risk level category
+- [x] All status keys are present even when count is 0
+- [x] All risk_level keys are present even when count is 0
 
 ### Resolution Time
-- [ ] avg_resolution_time_seconds is calculated correctly for resolved alerts
-- [ ] avg_resolution_time_seconds is null when no alerts have been resolved
-- [ ] Resolution time uses the terminal status_history entry timestamp minus created_at
-- [ ] Average is computed across all terminal states (confirmed_fraud, false_positive, escalated)
+- [x] avg_resolution_time_seconds is calculated correctly for resolved alerts
+- [x] avg_resolution_time_seconds is null when no alerts have been resolved
+- [x] Resolution time uses the terminal status_history entry timestamp minus created_at
+- [x] Average is computed across all terminal states (confirmed_fraud, false_positive, escalated)
 
 ### Edge Cases
-- [ ] Summary with zero alerts returns all counts as 0 and avg_resolution_time as null
-- [ ] Summary with one resolved alert returns that alert's resolution time as the average
-- [ ] Summary with multiple resolved alerts returns the correct arithmetic mean
-- [ ] Alerts in non-terminal states (pending, under_review) do not affect avg_resolution_time
-- [ ] by_status and by_risk_level always include all possible keys regardless of data present
+- [x] Summary with zero alerts returns all counts as 0 and avg_resolution_time as null
+- [x] Summary with one resolved alert returns that alert's resolution time as the average
+- [x] Summary with multiple resolved alerts returns the correct arithmetic mean
+- [x] Alerts in non-terminal states (pending, under_review) do not affect avg_resolution_time
+- [x] by_status and by_risk_level always include all possible keys regardless of data present

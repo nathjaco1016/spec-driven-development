@@ -37,25 +37,25 @@
 ## Acceptance Criteria
 
 ### Default Masking
-- [ ] GET /transactions/{id} returns card_id and account_id masked (e.g., "****5678")
-- [ ] POST /transactions response body returns masked PII fields
-- [ ] GET /alerts/{id} returns embedded transaction data with masked PII
-- [ ] GET /alerts list returns all embedded transaction data with masked PII
-- [ ] Masking shows last 4 characters: "1234567890" → "****7890"
-- [ ] Values with 4 or fewer characters are fully masked: "1234" → "****"
+- [x] GET /transactions/{id} returns card_id and account_id masked (e.g., "****5678")
+- [x] POST /transactions response body returns masked PII fields
+- [x] GET /alerts/{id} returns embedded transaction data with masked PII
+- [x] GET /alerts list returns all embedded transaction data with masked PII
+- [x] Masking shows last 4 characters: "1234567890" → "****7890"
+- [x] Values with 4 or fewer characters are fully masked: "1234" → "****"
 
 ### Authorized Access
-- [ ] GET /transactions/{id}?show_pii=true returns full card_id and account_id
-- [ ] GET /alerts/{id}?show_pii=true returns full PII in embedded transaction
-- [ ] GET /alerts?show_pii=true returns full PII across all results
-- [ ] show_pii=false behaves the same as omitting the parameter (masked)
+- [x] GET /transactions/{id}?show_pii=true returns full card_id and account_id
+- [x] GET /alerts/{id}?show_pii=true returns full PII in embedded transaction
+- [x] GET /alerts?show_pii=true returns full PII across all results
+- [x] show_pii=false behaves the same as omitting the parameter (masked)
 
 ### Consistency
-- [ ] PII masking is applied consistently across all endpoints — no endpoint leaks unmasked data by default
-- [ ] Masking does not affect stored data — full values are preserved in the database
-- [ ] The contains_pii flag on alerts is set to true by default
+- [x] PII masking is applied consistently across all endpoints — no endpoint leaks unmasked data by default
+- [x] Masking does not affect stored data — full values are preserved in the database
+- [x] The contains_pii flag on alerts is set to true by default
 
 ### Edge Cases
-- [ ] Empty string card_id or account_id is masked as "****"
-- [ ] Very long PII values are correctly masked (only last 4 shown)
-- [ ] show_pii parameter with non-boolean values (e.g., "yes", "1") is handled gracefully (treat as false or return 422)
+- [x] Empty string card_id or account_id is masked as "****"
+- [x] Very long PII values are correctly masked (only last 4 shown)
+- [x] show_pii parameter with non-boolean values (e.g., "yes", "1") is handled gracefully (treat as false or return 422)

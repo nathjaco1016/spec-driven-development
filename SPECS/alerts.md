@@ -27,22 +27,22 @@
 - GET response returns the alert with its linked transaction's PII fields masked by default
 
 ## Acceptance Criteria
-- [ ] POST /alerts creates an alert and returns it with generated UUID, pending status, and derived risk_level
-- [ ] POST /alerts returns 422 for missing transaction_id or risk_score
-- [ ] POST /alerts returns 404 if transaction_id does not reference an existing transaction
-- [ ] POST /alerts returns 409 if an alert already exists for the given transaction_id
-- [ ] POST /alerts returns 422 for risk_score < 0.0
-- [ ] POST /alerts returns 422 for risk_score > 1.0
-- [ ] POST /alerts returns 422 for non-numeric risk_score
-- [ ] Risk level is correctly derived at boundary: score 0.0 → low
-- [ ] Risk level is correctly derived at boundary: score 0.29 → low
-- [ ] Risk level is correctly derived at boundary: score 0.3 → medium
-- [ ] Risk level is correctly derived at boundary: score 0.59 → medium
-- [ ] Risk level is correctly derived at boundary: score 0.6 → high
-- [ ] Risk level is correctly derived at boundary: score 0.79 → high
-- [ ] Risk level is correctly derived at boundary: score 0.8 → critical
-- [ ] Risk level is correctly derived at boundary: score 1.0 → critical
-- [ ] Alert is created with status "pending" and a single status_history entry
-- [ ] GET /alerts/{id} returns the alert with all fields populated
-- [ ] GET /alerts/{id} returns 404 for nonexistent alert ID
-- [ ] Client cannot override risk_level, status, or created_at on creation
+- [x] POST /alerts creates an alert and returns it with generated UUID, pending status, and derived risk_level
+- [x] POST /alerts returns 422 for missing transaction_id or risk_score
+- [x] POST /alerts returns 404 if transaction_id does not reference an existing transaction
+- [x] POST /alerts returns 409 if an alert already exists for the given transaction_id
+- [x] POST /alerts returns 422 for risk_score < 0.0
+- [x] POST /alerts returns 422 for risk_score > 1.0
+- [x] POST /alerts returns 422 for non-numeric risk_score
+- [x] Risk level is correctly derived at boundary: score 0.0 → low
+- [x] Risk level is correctly derived at boundary: score 0.29 → low
+- [x] Risk level is correctly derived at boundary: score 0.3 → medium
+- [x] Risk level is correctly derived at boundary: score 0.59 → medium
+- [x] Risk level is correctly derived at boundary: score 0.6 → high
+- [x] Risk level is correctly derived at boundary: score 0.79 → high
+- [x] Risk level is correctly derived at boundary: score 0.8 → critical
+- [x] Risk level is correctly derived at boundary: score 1.0 → critical
+- [x] Alert is created with status "pending" and a single status_history entry
+- [x] GET /alerts/{id} returns the alert with all fields populated
+- [x] GET /alerts/{id} returns 404 for nonexistent alert ID
+- [x] Client cannot override risk_level, status, or created_at on creation

@@ -26,23 +26,23 @@
 ## Acceptance Criteria
 
 ### Single Filters
-- [ ] GET /alerts with no filters returns all alerts
-- [ ] GET /alerts?status=pending returns only pending alerts
-- [ ] GET /alerts?risk_level=critical returns only critical alerts
-- [ ] GET /alerts?analyst_id=analyst_1 returns only alerts assigned to analyst_1
-- [ ] GET /alerts?analyst_id=unassigned returns only unassigned alerts
-- [ ] GET /alerts?created_after=<datetime> returns alerts created on or after that time
-- [ ] GET /alerts?created_before=<datetime> returns alerts created on or before that time
+- [x] GET /alerts with no filters returns all alerts
+- [x] GET /alerts?status=pending returns only pending alerts
+- [x] GET /alerts?risk_level=critical returns only critical alerts
+- [x] GET /alerts?analyst_id=analyst_1 returns only alerts assigned to analyst_1
+- [x] GET /alerts?analyst_id=unassigned returns only unassigned alerts
+- [x] GET /alerts?created_after=<datetime> returns alerts created on or after that time
+- [x] GET /alerts?created_before=<datetime> returns alerts created on or before that time
 
 ### Combined Filters
-- [ ] GET /alerts?status=pending&risk_level=high returns alerts matching both conditions
-- [ ] GET /alerts?status=under_review&analyst_id=analyst_1 returns correct intersection
-- [ ] GET /alerts?created_after=<t1>&created_before=<t2> returns alerts within the date range
+- [x] GET /alerts?status=pending&risk_level=high returns alerts matching both conditions
+- [x] GET /alerts?status=under_review&analyst_id=analyst_1 returns correct intersection
+- [x] GET /alerts?created_after=<t1>&created_before=<t2> returns alerts within the date range
 
 ### Edge Cases
-- [ ] Invalid status value returns 422
-- [ ] Invalid risk_level value returns 422
-- [ ] Invalid datetime format for created_after or created_before returns 422
-- [ ] Filters that match zero alerts return {"alerts": [], "total": 0} with 200 status
-- [ ] Date range where created_after > created_before returns empty results (not an error)
-- [ ] Results are sorted by created_at descending by default
+- [x] Invalid status value returns 422
+- [x] Invalid risk_level value returns 422
+- [x] Invalid datetime format for created_after or created_before returns 422
+- [x] Filters that match zero alerts return {"alerts": [], "total": 0} with 200 status
+- [x] Date range where created_after > created_before returns empty results (not an error)
+- [x] Results are sorted by created_at descending by default

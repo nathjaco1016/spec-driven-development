@@ -20,7 +20,20 @@ class MerchantCategory(str, Enum):
 
 
 class TransactionCreate(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(
+        extra="forbid",
+        json_schema_extra={
+            "example": {
+                "amount": 149.99,
+                "merchant_name": "Best Buy",
+                "merchant_category": "electronics",
+                "location": "Charlotte, NC",
+                "timestamp": "2024-05-01T14:30:00Z",
+                "card_id": "4111111111111234",
+                "account_id": "ACC0000000001",
+            }
+        },
+    )
 
     amount: float
     merchant_name: str
@@ -71,7 +84,15 @@ class StatusHistoryEntry(BaseModel):
 
 
 class AlertCreate(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(
+        extra="forbid",
+        json_schema_extra={
+            "example": {
+                "transaction_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "risk_score": 0.85,
+            }
+        },
+    )
 
     transaction_id: UUID
     risk_score: float
@@ -115,6 +136,13 @@ class StatusUpdateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     status: AlertStatus
     changed_by: str
+
+
+class SummaryResponse(BaseModel):
+    total_alerts: int
+    by_status: dict[str, int]
+    by_risk_level: dict[str, int]
+    avg_resolution_time_seconds: Optional[float]
 
 
 class AlertListResponse(BaseModel):

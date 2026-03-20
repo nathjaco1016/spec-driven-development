@@ -16,6 +16,7 @@ from src.models import (
     RiskLevel,
     StatusHistoryEntry,
     StatusUpdateRequest,
+    SummaryResponse,
     TERMINAL_STATUSES,
     VALID_TRANSITIONS,
     TransactionResponse,
@@ -178,6 +179,41 @@ def list_alerts(
         ))
 
     return AlertListResponse(alerts=alerts, total=len(alerts))
+
+
+@router.get("/summary", response_model=SummaryResponse)
+def get_summary():
+    by_status = {s.value: 0 for s in AlertStatus}
+    by_risk_level = {r.value: 0 for r in RiskLevel}
+    total_alerts = 0
+    resolution_times = []
+
+    with db() as conn:
+        for row in conn.execute("SELECT status, risk_level, created_at, status_history FROM alerts").fetchall():
+            total_alerts += 1
+            by_status[row["status"]] += 1
+            by_risk_level[row["risk_level"]] += 1
+
+            status = AlertStatus(row["status"])
+            if status in TERMINAL_STATUSES:
+                history = json.loads(row["status_history"])
+                terminal_entry = next(
+                    (e for e in reversed(history) if AlertStatus(e["status"]) in TERMINAL_STATUSES),
+                    None,
+                )
+                if terminal_entry:
+                    created = datetime.fromisoformat(row["created_at"])
+                    resolved = datetime.fromisoformat(terminal_entry["timestamp"])
+                    resolution_times.append((resolved - created).total_seconds())
+
+    avg = sum(resolution_times) / len(resolution_times) if resolution_times else None
+
+    return SummaryResponse(
+        total_alerts=total_alerts,
+        by_status=by_status,
+        by_risk_level=by_risk_level,
+        avg_resolution_time_seconds=avg,
+    )
 
 
 @router.get("/{alert_id}", response_model=AlertResponse)

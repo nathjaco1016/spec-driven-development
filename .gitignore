@@ -1,0 +1,4 @@
+fraud-alert-service/fraud_alerts.db
+__pycache__/
+*.pyc
+.pytest_cache/
